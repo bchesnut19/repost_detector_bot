@@ -8,9 +8,12 @@
 using namespace dlib;
 using namespace std;
 
+const int NUMSECTORS = 12;
+const int TOLERANCE = 10;
+
 class imageHash
 {
-	rgb_pixel sector[16];
+	rgb_pixel sector[NUMSECTORS];
 	string imagepath;
 public:
 	imageHash(string filepath)
@@ -22,8 +25,8 @@ public:
 
 		int width = (int)image.nc();
 		int height = (int)image.nr();
-		int widthsecsize = (int)width/16;
-		int heightsecsize = (int)height/16;
+		int widthsecsize = (int)width/NUMSECTORS;
+		int heightsecsize = (int)height/NUMSECTORS;
 		
 		
 		int rowval = 0;
@@ -32,9 +35,9 @@ public:
 		int upperbndrow = 0;
 
 
-		for (int i = 0; i<16; i++)
+		for (int i = 0; i< NUMSECTORS; i++)
 		{
-			if (i != 15)
+			if (i != (NUMSECTORS-1))
 			{
 				upperbndcol = colval + widthsecsize;
 				upperbndrow = rowval + heightsecsize;	
@@ -61,7 +64,7 @@ public:
 		rgb_pixel * inpixels = (*imageIn).getsectors();
 		bool close = true;
 
-		for (int i = 0; i < 16; i++)
+		for (int i = 0; i < NUMSECTORS; i++)
 		{
 			if (!(comparesectors(sector[i],inpixels[i])))
 			{
@@ -73,7 +76,7 @@ public:
 	void print()
 	{
 		cout << "Image: " << imagepath << "\n";
-		for (int i = 0; i < 16; i++)
+		for (int i = 0; i < NUMSECTORS; i++)
 		{
 			rgb_pixel temp = sector[i];
 			cout << "Sector " << i << ":" << (int)temp.red << ", " << (int)temp.green << ", " << (int)temp.blue << ".\n";
@@ -136,7 +139,7 @@ private:
 	{
 		int temp = value1-value2;
 		bool within;
-		if((temp < 5) && (temp > (-5)))
+		if((temp < (TOLERANCE/2)) && (temp > -(TOLERANCE/2)))
 		{
 			within = true;
 		}
